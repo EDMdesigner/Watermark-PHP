@@ -7,13 +7,13 @@
 	error_reporting(-1);
 */
 	if(!isset($_GET['img']) || !$_GET['img']) {
-		sendFailImage("No image given.");
+		sendFailImage('No image given.');
 		die();
 	}
 	$stamp = imagecreatefrompng('./stamps/play_button.png');
 
 	if(!$stamp) {
-		sendFailImage("Invalid stamp icon.");
+		sendFailImage('Invalid stamp icon.');
 		die();
 	}
 
@@ -34,13 +34,13 @@
 			$baseImg = imagecreatefromgif($baseImgSource);
 			break;
 		default:
-			sendFailImage("This is not an accepted image type. Accepted types are jpg/jpeg, png and gif");
+			sendFailImage('This is not an accepted image type. Accepted types are jpg/jpeg, png and gif');
 			die();
 			break;
 	}
 
 	if(!$baseImg) {
-		sendFailImage("Invalid image given.");
+		sendFailImage('Invalid image given.');
 		die();
 	}
 
@@ -51,7 +51,7 @@
 	$stampWidth = imagesx($stamp);
 
 	if($baseImgWidth < $stampWidth || $baseImgHeight < $stampHeight) {
-		sendFailImage("The image is smaller then the stamp icon.");
+		sendFailImage('The image is smaller then the stamp icon.');
 		die();
 	}
 
@@ -59,7 +59,7 @@
 	$stampY = floor(($baseImgHeight - $stampHeight) / 2);
 
 	if(!imagecopy($baseImg, $stamp, $stampX, $stampY, 0, 0, $stampWidth, $stampHeight)) {
-		sendFailImage("Could not stamp the image.");
+		sendFailImage('Could not stamp the image.');
 		die();
 	};
 
@@ -75,8 +75,8 @@
 		$textY = 10;
 		$lineHeight = 20;
 
-		$wrappedMessage = wordwrap($message, 20, "|");
-		$messageArray = explode("|", $wrappedMessage);
+		$wrappedMessage = wordwrap($message, 20, '|');
+		$messageArray = explode('|', $wrappedMessage);
 		for($i = 0; $i < count($messageArray); $i++) {
 			imagestring($failImage, 3, $textX, $textY, $messageArray[$i], $text_color);
 			$textY += $lineHeight;
