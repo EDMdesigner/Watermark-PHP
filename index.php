@@ -10,6 +10,7 @@
 		sendFailImage('No image given.');
 		die();
 	}
+
 	$stamp = imagecreatefrompng('./stamps/play_button.png');
 
 	if(!$stamp) {
@@ -44,6 +45,11 @@
 		die();
 	}
 
+	if(isset($_GET['width']) && $_GET['width'] && is_numeric($_GET['width'])) {
+		$newWidth = $_GET['width'];
+		$baseImg = resizeImage($baseImg, $newWidth);
+	}
+
 	$baseImgWidth = imagesx($baseImg);
 	$baseImgHeight = imagesy($baseImg);
 
@@ -51,8 +57,9 @@
 	$stampWidth = imagesx($stamp);
 
 	if($baseImgWidth < $stampWidth || $baseImgHeight < $stampHeight) {
-		sendFailImage('The image is smaller then the stamp icon.');
-		die();
+		$stamp = resizeImage($stamp, $baseImgWidth, true);
+		sendImage($stamp);
+		return;
 	}
 
 	$stampX = floor(($baseImgWidth - $stampWidth) / 2);
@@ -63,9 +70,7 @@
 		die();
 	};
 
-	header('Content-type: image/png');
-	imagepng($baseImg);
-	imagedestroy($baseImg);
+	sendImage($baseImg);
 
 	function sendFailImage($message) {
 		$failImage = imagecreate(200, 200);
@@ -82,8 +87,29 @@
 			$textY += $lineHeight;
 		}
 	
+		sendImage($failImage);
+	}
+
+	function resizeImage($orinalImg, $newWidth, $setTransparency) {
+		$originalWidth = imagesx($orinalImg);
+		$originalHeight = imagesy($orinalImg);
+		$newHeight = round($newWidth / $originalWidth * $originalHeight);
+		$resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+
+		if($setTransparency) {	
+			imagealphablending( $resizedImage, false );
+			imagesavealpha( $resizedImage, true );
+		}
+
+		imagecopyresampled($resizedImage, $orinalImg, 0, 0, 0, 0, $newWidth, $newHeight, $originalWidth, $originalHeight);
+
+		return $resizedImage;
+	}
+
+	function sendImage($image) {
 		header('Content-type: image/png');
-		imagepng($failImage);
-		imagedestroy($failImage);	
+		imagepng($image);
+		imagedestroy($baseImg);
+		imagedestroy($stamp);
 	}
 ?>
