@@ -57,7 +57,7 @@
 	$stampWidth = imagesx($stamp);
 
 	if($baseImgWidth < $stampWidth || $baseImgHeight < $stampHeight) {
-		$stamp = resizeImage($stamp, $baseImgWidth, true);
+		$stamp = resizeImage($stamp, 600, true);
 		sendImage($stamp);
 		return;
 	}
@@ -70,6 +70,7 @@
 		die();
 	};
 
+	$baseImg = resizeImage($baseImg, 600);
 	sendImage($baseImg);
 
 	function sendFailImage($message) {
